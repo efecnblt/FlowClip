@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- <ApplicationIcon>Resources\Icons\app-icon.ico</ApplicationIcon> -->
+    <AssemblyName>FlowClip</AssemblyName>
+    <RootNamespace>FlowClip</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>FlowClip</Authors>
+    <Description>Smart Clipboard Manager with Floating Widget</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="H.NotifyIcon.Wpf" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Icons\app-icon.ico" />
+    <None Remove="Resources\Icons\tray-icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\app-icon.ico" Condition="Exists('Resources\Icons\app-icon.ico')" />
+    <Resource Include="Resources\Icons\tray-icon.ico" Condition="Exists('Resources\Icons\tray-icon.ico')" />
+  </ItemGroup>
+
+</Project>

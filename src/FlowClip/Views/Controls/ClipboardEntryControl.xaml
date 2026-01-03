@@ -1,0 +1,103 @@
+<UserControl x:Class="FlowClip.Views.Controls.ClipboardEntryControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:FlowClip.ViewModels">
+
+    <Border Background="{StaticResource SecondaryBackgroundBrush}"
+            CornerRadius="8"
+            Padding="12,10"
+            Cursor="Hand">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Color Preview (for Color type) -->
+            <Ellipse Grid.Column="0"
+                     Width="32" Height="32"
+                     Margin="0,0,12,0"
+                     Fill="{Binding ColorHex, Converter={StaticResource ColorHexToBrushConverter}}"
+                     Visibility="{Binding ContentType, Converter={StaticResource ContentTypeToVisibilityConverter}, ConverterParameter=Color}">
+                <Ellipse.Effect>
+                    <DropShadowEffect BlurRadius="4" ShadowDepth="1" Opacity="0.3"/>
+                </Ellipse.Effect>
+            </Ellipse>
+
+            <!-- Image Thumbnail (for Image type) -->
+            <Border Grid.Column="0"
+                    Width="48" Height="48"
+                    Margin="0,0,12,0"
+                    CornerRadius="6"
+                    Background="{StaticResource TertiaryBackgroundBrush}"
+                    Visibility="{Binding ContentType, Converter={StaticResource ContentTypeToVisibilityConverter}, ConverterParameter=Image}">
+                <Image Source="{Binding Thumbnail}"
+                       Stretch="UniformToFill"
+                       RenderOptions.BitmapScalingMode="HighQuality">
+                    <Image.Clip>
+                        <RectangleGeometry Rect="0,0,48,48" RadiusX="6" RadiusY="6"/>
+                    </Image.Clip>
+                </Image>
+            </Border>
+
+            <!-- Content Area -->
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <!-- Type Tag + Time -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                    <!-- Type Tag -->
+                    <Border Style="{StaticResource TagStyle}"
+                            Background="{Binding ContentType, Converter={StaticResource ContentTypeToColorConverter}}"
+                            Visibility="{Binding HasTypeTag, Converter={StaticResource HasTypeTagToVisibilityConverter}}"
+                            Margin="0,0,8,0">
+                        <TextBlock Text="{Binding TypeLabel}"
+                                   FontSize="10"
+                                   FontWeight="SemiBold"
+                                   Foreground="White"/>
+                    </Border>
+
+                    <!-- Time -->
+                    <TextBlock Text="{Binding TimeAgo}"
+                               FontSize="11"
+                               Foreground="{StaticResource SecondaryForegroundBrush}"
+                               VerticalAlignment="Center"/>
+
+                    <!-- Pin Indicator -->
+                    <TextBlock Text="📌"
+                               FontSize="11"
+                               Margin="8,0,0,0"
+                               Visibility="{Binding IsPinned, Converter={StaticResource BoolToVisibilityConverter}}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Preview Text -->
+                <TextBlock Text="{Binding DisplayText}"
+                           FontSize="13"
+                           Foreground="{StaticResource PrimaryForegroundBrush}"
+                           TextTrimming="CharacterEllipsis"
+                           MaxHeight="40"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <!-- Action Buttons -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Pin Button -->
+                <Button Style="{StaticResource IconButtonStyle}"
+                        ToolTip="Pin/Unpin"
+                        Command="{Binding DataContext.TogglePinCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                        CommandParameter="{Binding}">
+                    <TextBlock Text="📌" FontSize="12"/>
+                </Button>
+
+                <!-- Delete Button -->
+                <Button Style="{StaticResource IconButtonStyle}"
+                        ToolTip="Delete"
+                        Margin="4,0,0,0"
+                        Command="{Binding DataContext.DeleteEntryCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                        CommandParameter="{Binding}">
+                    <TextBlock Text="🗑" FontSize="12"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
