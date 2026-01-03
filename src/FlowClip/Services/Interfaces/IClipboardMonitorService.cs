@@ -49,4 +49,9 @@ public interface IClipboardMonitorService : IDisposable
     /// Resume monitoring after pause.
     /// </summary>
     void Resume();
+
+    /// <summary>
+    /// Gets whether monitoring is currently paused.
+    /// </summary>
+    bool IsPaused { get; }
 }

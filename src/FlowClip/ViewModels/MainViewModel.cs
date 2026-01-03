@@ -36,6 +36,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _isLoading;
 
+    [ObservableProperty]
+    private bool _isMonitoringPaused;
+
     public ObservableCollection<ClipboardEntryViewModel> Entries { get; } = [];
 
     public MainViewModel(
@@ -190,6 +193,21 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void TogglePauseMonitoring()
+    {
+        if (IsMonitoringPaused)
+        {
+            _clipboardMonitor.Resume();
+            IsMonitoringPaused = false;
+        }
+        else
+        {
+            _clipboardMonitor.Pause();
+            IsMonitoringPaused = true;
+        }
+    }
+
+    [RelayCommand]
     private void Exit()
     {
         _clipboardMonitor.Stop();
@@ -220,6 +238,13 @@ public partial class MainViewModel : ObservableObject
 
             if (e.HasText && !string.IsNullOrWhiteSpace(e.TextContent))
             {
+                // Check for sensitive data (passwords, credit cards, etc.)
+                if (ContentPatternMatcher.IsSensitiveData(e.TextContent))
+                {
+                    // Don't save sensitive data to history
+                    return;
+                }
+
                 // Analyze text content
                 var analysis = _contentAnalyzer.AnalyzeText(e.TextContent);
 

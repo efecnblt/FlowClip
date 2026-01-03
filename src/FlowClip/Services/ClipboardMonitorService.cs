@@ -20,6 +20,9 @@ public class ClipboardMonitorService : IClipboardMonitorService
     public event EventHandler<ClipboardChangedEventArgs>? ClipboardChanged;
 
     /// <inheritdoc/>
+    public bool IsPaused => _isPaused;
+
+    /// <inheritdoc/>
     public void Start(Window window)
     {
         if (_isMonitoring) return;

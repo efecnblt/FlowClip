@@ -72,10 +72,20 @@
                             <Run Text="{Binding Entries.Count, Mode=OneWay}"/>
                         </TextBlock>
 
+                        <!-- Pause/Resume Button -->
+                        <Button Style="{StaticResource IconButtonStyle}"
+                                ToolTip="{Binding IsMonitoringPaused, Converter={StaticResource PauseButtonTooltipConverter}}"
+                                Margin="10,0,0,0"
+                                Command="{Binding TogglePauseMonitoringCommand}">
+                            <TextBlock Text="{Binding IsMonitoringPaused, Converter={StaticResource PauseButtonIconConverter}}"
+                                       FontSize="12"
+                                       Foreground="{Binding IsMonitoringPaused, Converter={StaticResource PauseButtonColorConverter}}"/>
+                        </Button>
+
                         <!-- Settings Button -->
                         <Button Style="{StaticResource IconButtonStyle}"
                                 ToolTip="Settings"
-                                Margin="10,0,0,0"
+                                Margin="2,0,0,0"
                                 Command="{Binding OpenSettingsCommand}">
                             <TextBlock Text="⚙" FontSize="12" Foreground="White"/>
                         </Button>

@@ -32,6 +32,62 @@ public static partial class ContentPatternMatcher
     [GeneratedRegex(@"(?:=>|->|\$\{|\{\{|<\/\w+>|\/>|===|!==|&&|\|\||::\w+|@\w+\()", RegexOptions.Compiled)]
     private static partial Regex CodeIndicatorRegex();
 
+    // Credit card pattern (basic)
+    [GeneratedRegex(@"^\d{4}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}$", RegexOptions.Compiled)]
+    private static partial Regex CreditCardRegex();
+
+    // SSN pattern
+    [GeneratedRegex(@"^\d{3}[\s\-]?\d{2}[\s\-]?\d{4}$", RegexOptions.Compiled)]
+    private static partial Regex SsnRegex();
+
+    /// <summary>
+    /// Check if content appears to be sensitive data (password, credit card, etc.)
+    /// </summary>
+    public static bool IsSensitiveData(string content)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+            return false;
+
+        content = content.Trim();
+
+        // Don't save very short clipboard content that might be passwords
+        // Passwords are typically 8-64 characters, single line, no spaces
+        if (!content.Contains('\n') && content.Length >= 8 && content.Length <= 128)
+        {
+            // Check if it looks like a password:
+            // - Has mixed character types (upper, lower, digit, special)
+            // - No spaces or very few spaces
+            // - Not a common sentence structure
+
+            bool hasUpper = content.Any(char.IsUpper);
+            bool hasLower = content.Any(char.IsLower);
+            bool hasDigit = content.Any(char.IsDigit);
+            bool hasSpecial = content.Any(c => !char.IsLetterOrDigit(c) && c != ' ');
+            int spaceCount = content.Count(c => c == ' ');
+
+            // If it has 3+ character types and few spaces, likely a password
+            int charTypeCount = (hasUpper ? 1 : 0) + (hasLower ? 1 : 0) + (hasDigit ? 1 : 0) + (hasSpecial ? 1 : 0);
+            if (charTypeCount >= 3 && spaceCount <= 1)
+                return true;
+        }
+
+        // Check for credit card numbers
+        if (CreditCardRegex().IsMatch(content))
+            return true;
+
+        // Check for SSN
+        if (SsnRegex().IsMatch(content))
+            return true;
+
+        // Check for common password-related clipboard content from password managers
+        if (content.Length <= 128 && !content.Contains('\n') &&
+            (content.Contains("password", StringComparison.OrdinalIgnoreCase) ||
+             content.Contains("secret", StringComparison.OrdinalIgnoreCase)))
+            return false; // These are likely labels, not actual passwords
+
+        return false;
+    }
+
     /// <summary>
     /// Detect the content type of the given text.
     /// </summary>

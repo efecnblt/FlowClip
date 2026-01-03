@@ -9,6 +9,9 @@
     <converters:ContentTypeToVisibilityConverter x:Key="ContentTypeToVisibilityConverter"/>
     <converters:ColorHexToBrushConverter x:Key="ColorHexToBrushConverter"/>
     <converters:HasTypeTagToVisibilityConverter x:Key="HasTypeTagToVisibilityConverter"/>
+    <converters:PauseButtonIconConverter x:Key="PauseButtonIconConverter"/>
+    <converters:PauseButtonTooltipConverter x:Key="PauseButtonTooltipConverter"/>
+    <converters:PauseButtonColorConverter x:Key="PauseButtonColorConverter"/>
 
     <!-- Colors -->
     <Color x:Key="PrimaryBackgroundColor">#1E1E1E</Color>
