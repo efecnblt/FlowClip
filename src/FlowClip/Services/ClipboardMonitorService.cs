@@ -15,6 +15,8 @@ public class ClipboardMonitorService : IClipboardMonitorService
     private IntPtr _hwnd;
     private bool _isMonitoring;
     private bool _isPaused;
+    private DateTime _lastClipboardChange = DateTime.MinValue;
+    private const int DebounceMilliseconds = 500; // Ignore changes within 500ms
 
     /// <inheritdoc/>
     public event EventHandler<ClipboardChangedEventArgs>? ClipboardChanged;
@@ -82,6 +84,14 @@ public class ClipboardMonitorService : IClipboardMonitorService
 
     private void OnClipboardChanged()
     {
+        // Debounce: Ignore if last change was too recent
+        var now = DateTime.Now;
+        if ((now - _lastClipboardChange).TotalMilliseconds < DebounceMilliseconds)
+        {
+            return;
+        }
+        _lastClipboardChange = now;
+
         // Read clipboard content on UI thread
         Application.Current?.Dispatcher.InvokeAsync(() =>
         {
